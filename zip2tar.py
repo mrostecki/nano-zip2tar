@@ -17,6 +17,7 @@
 
 import argparse
 import os
+import stat
 import sys
 import tarfile
 import time
@@ -33,8 +34,10 @@ def zip2tar(zip_file: str, tar_file: str, subdir=None):
         filename = zip_info.filename
         if subdir:
             filename = os.path.join(subdir, filename)
+        filemode = zip_info.external_attr >> 16
 
         tar_info = tarfile.TarInfo(name=filename)
+        tar_info.mode = filemode
         tar_info.size = zip_info.file_size
         tf.addfile(
             tarinfo=tar_info,
